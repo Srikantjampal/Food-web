@@ -5,12 +5,22 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
+<<<<<<< HEAD
     "start":"nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
+=======
+    "start": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build":"npm run build"
+>>>>>>> 39209a7 (pull)
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+<<<<<<< HEAD
+=======
+    "@types/express": "^5.0.0",
+>>>>>>> 39209a7 (pull)
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
