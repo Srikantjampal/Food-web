@@ -8,7 +8,12 @@ export const StoreContext = createContext(null)
 const StoreContextProvider = (props)=>{
 
     const [cartItem,setCartItem]=useState({});
-    const url = "http://localhost:7777";
+    const Localurl = "http://localhost:7777";
+    // For Vite, use import.meta.env; for Create React App, use process.env
+        const url =
+            (import.meta.env && import.meta.env.VITE_LIVE === "production")
+                ? import.meta.env.VITE_BACKEND_API_URL
+                : import.meta.env.VITE_API_URL;
     const [token,setToken]= useState("");
     const [food_list,setFood_list] = useState([]);
 
