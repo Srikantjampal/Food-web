@@ -1,90 +1,161 @@
-import { useContext, useEffect, useState } from 'react'
-import './Order.css'
-import { StoreContext } from '../../content/StoreContext'
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useContext, useEffect, useState } from "react";
+import "./Order.css";
+import { StoreContext } from "../../content/StoreContext";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Orders = () => {
-
-  const{getcartTotalAmount,token,food_list,cartItem,url}= useContext(StoreContext);
+  const {
+    getcartTotalAmount,
+    token,
+    food_list,
+    cartItem,
+    url,
+    getCalculatedTotalAmount,
+    discount,
+    discountPercentage
+  } = useContext(StoreContext);
   const navigate = useNavigate();
 
-  const [data , setData]= useState({
-    firstName:"",
-    lastName:"",
-    email:"",
-    street:"",
-    city:'',
-    state:'',
-    zipcode:"",
-    country:"",
-    phone:''
-  })
+  const [data, setData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    street: "",
+    city: "",
+    state: "",
+    zipcode: "",
+    country: "",
+    phone: "",
+  });
 
-  const onChangeHandler =(event)=>{
-    const name= event.target.name;
+  const onChangeHandler = (event) => {
+    const name = event.target.name;
     const value = event.target.value;
-    setData(data=>({...data,[name]:value}))
-  }
+    setData((data) => ({ ...data, [name]: value }));
+  };
 
-  const placeOrder= async(event)=>{
+  const placeOrder = async (event) => {
     event.preventDefault();
     let orderItems = [];
-    food_list.map((item)=>{
-      if(cartItem[item._id]>0){
-        let itemInfo= item;
-        itemInfo["quantity"]= cartItem[item._id];
-        orderItems.push(itemInfo)
-        }
-      })
-      let orderData = {
-        address:data,
-        items:orderItems,
-        amount:getcartTotalAmount()+2,
+    food_list.map((item) => {
+      if (cartItem[item._id] > 0) {
+        let itemInfo = item;
+        itemInfo["quantity"] = cartItem[item._id];
+        orderItems.push(itemInfo);
       }
-      console.log(orderData);
-      let response = await axios.post(url+"/api/order/place",orderData,{headers:{token}});
-      if(response.data.success){
-        const {session_url} = response.data;
-        window.location.replace(session_url);
-      }
-      else{
-        alert("error");
-      }
-  }
+    });
+    let orderData = {
+      address: data,
+      items: orderItems,
+      amount: getcartTotalAmount() + 2,
+    };
+    console.log(orderData);
+    let response = await axios.post(url + "/api/order/place", orderData, {
+      headers: { token },
+    });
+    if (response.data.success) {
+      const { session_url } = response.data;
+      window.location.replace(session_url);
+    } else {
+      alert("error");
+    }
+  };
 
-  useEffect(()=>{
-      if(!token){
-        navigate('/cart');
-      }
-      else if(getcartTotalAmount()===0){
-        navigate('/cart');
-      }
-  },[token])
+  useEffect(() => {
+    if (!token) {
+      navigate("/cart");
+    } else if (getcartTotalAmount() === 0) {
+      navigate("/cart");
+    }
+  }, [token]);
 
   return (
-    <form onSubmit={placeOrder} className='place-order'> 
-      <div className='place-order-left'>
+    <form onSubmit={placeOrder} className="place-order">
+      <div className="place-order-left">
         <div className="title">
           <div className="multi-fields">
-            <input required name='firstName' onChange={onChangeHandler} value={data.firstName} type="text" placeholder='First name' />
-            <input required name='lastName' onChange={onChangeHandler} value={data.lastName} type="text" placeholder='Last name' />
+            <input
+              required
+              name="firstName"
+              onChange={onChangeHandler}
+              value={data.firstName}
+              type="text"
+              placeholder="First name"
+            />
+            <input
+              required
+              name="lastName"
+              onChange={onChangeHandler}
+              value={data.lastName}
+              type="text"
+              placeholder="Last name"
+            />
           </div>
-            <input required name='email' onChange={onChangeHandler} value={data.email} type="email" placeholder='Email address' />
-            <input required name='street' onChange={onChangeHandler} value={data.street} type="text" placeholder='Street' />
+          <input
+            required
+            name="email"
+            onChange={onChangeHandler}
+            value={data.email}
+            type="email"
+            placeholder="Email address"
+          />
+          <input
+            required
+            name="street"
+            onChange={onChangeHandler}
+            value={data.street}
+            type="text"
+            placeholder="Street"
+          />
           <div className="multi-fields">
-            <input required name='city' onChange={onChangeHandler} value={data.city} type="text" placeholder='City' />
-            <input required name='state' onChange={onChangeHandler} value={data.state} type="text" placeholder='State' />
+            <input
+              required
+              name="city"
+              onChange={onChangeHandler}
+              value={data.city}
+              type="text"
+              placeholder="City"
+            />
+            <input
+              required
+              name="state"
+              onChange={onChangeHandler}
+              value={data.state}
+              type="text"
+              placeholder="State"
+            />
           </div>
           <div className="multi-fields">
-            <input required name='zipcode' onChange={onChangeHandler} value={data.zipcode} type="text" placeholder='Zip code' />
-            <input required name='country' onChange={onChangeHandler} value={data.country} type="text" placeholder='Country' />
+            <input
+              required
+              name="zipcode"
+              onChange={onChangeHandler}
+              value={data.zipcode}
+              type="text"
+              placeholder="Zip code"
+            />
+            <input
+              required
+              name="country"
+              onChange={onChangeHandler}
+              value={data.country}
+              type="text"
+              placeholder="Country"
+            />
           </div>
-          <input required name='phone' onChange={onChangeHandler} value={data.phone} type="text" placeholder='Phone' />
+          <input
+            required
+            name="phone"
+            onChange={onChangeHandler}
+            value={data.phone}
+            type="text"
+            placeholder="Phone"
+          />
         </div>
       </div>
       <div className="place-order-right">
-      <div className="cart-total">
+        <div className="cart-total">
           <h2>Cart Total</h2>
           <div>
             <div className="cart-total-details">
@@ -92,23 +163,29 @@ const Orders = () => {
               <p>₹{getcartTotalAmount()}</p>
             </div>
             <hr />
+            {discount > 0 && (
+              <div className="cart-total-details">
+                <p>Discount</p>
+                <p>-₹{discount} ({discountPercentage})</p>
+              </div>
+            )}
+            <hr />
             <div className="cart-total-details">
               <p>Delivery Fee</p>
-              <p>₹{getcartTotalAmount()!=0?2:0}</p>
+              <p>₹{getcartTotalAmount() != 0 ? 2 : 0}</p>
             </div>
             <hr />
             <div className="cart-total-details">
               <b>Total</b>
-              <b>₹{getcartTotalAmount()!=0?getcartTotalAmount()+2:0}</b>
+              <b>₹{getCalculatedTotalAmount() != 0 ? getCalculatedTotalAmount() : 0}</b>
             </div>
           </div>
           {/* below code try using Link to redirect or navigate */}
-          <button type='submit'>PROCEED TO PAYMENT</button> 
+          <button type="submit">PROCEED TO PAYMENT</button>
         </div>
       </div>
     </form>
-    
-  )
-}
+  );
+};
 
-export default Orders
+export default Orders;

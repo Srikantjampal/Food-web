@@ -92,3 +92,14 @@
         justify-content:start ;
     }
 }
+
+.quantity-section{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.quantity-section .btn{
+    width: 40px;
+    cursor: pointer;
+}
