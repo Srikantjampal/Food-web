@@ -73,8 +73,8 @@ const StoreContextProvider = (props)=>{
             }
         }
         loadData();
-    },[])
 
+    },[])
     const contextValue ={
         food_list , cartItem,setCartItem , addToCart,removeToCart,getcartTotalAmount,url, token,setToken
     }

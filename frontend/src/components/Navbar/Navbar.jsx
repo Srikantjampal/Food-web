@@ -1,13 +1,13 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { assets } from "../../assets/assets";
 import "./Navbar.css";
-import {Link, useNavigate} from 'react-router-dom'
+import {Link, useNavigate,useLocation} from 'react-router-dom'
 import { StoreContext } from "../../content/StoreContext";
 const Navbar = ({setShowLogin}) => {
-
-  const [menu,setMenu]=useState("home");
   const {getcartTotalAmount,token,setToken}= useContext(StoreContext);
   const navigate = useNavigate();
+  const location = useLocation();
+  const currentPath = location.pathname;
   const logout=()=>{
     localStorage.removeItem("token");
     setToken("");
@@ -18,10 +18,10 @@ const Navbar = ({setShowLogin}) => {
     <div className="navbar">
       <Link to='/' ><img src={assets.logo} alt="" className="logo" /></Link>
       <ul className="navbar-menu">
-        <Link to='/' onClick={()=>setMenu("home")} className={menu=="home"?"active":""}>Home</Link>
-        <a href="#explore-menu" onClick={()=>setMenu("menu")} className={menu=="menu"?"active":""}>Menu</a>
-        <a href="#app-download" onClick={()=>setMenu("mobile-app")} className={menu=="mobile-app"?"active":""}>mobile-app</a>
-        <a href="#footer" onClick={()=>setMenu("contact-us")} className={menu=="contact-us"?"active":""}>Contact us</a>
+        <Link to="/" className={currentPath === "/" ? "active" : ""}>Home</Link>
+        <a href="#explore-menu" className={currentPath === "/menu" ? "active" : ""}>Menu</a>
+        <a href="#app-download" className={currentPath === "/mobile-app" ? "active" : ""}>Mobile App</a>
+        <Link to="/contact" className={currentPath === "/contact" ? "active" : ""}>Contact Us</Link>
       </ul>
       <div className="navbar-right">
           <img src={assets.search_icon} alt="" />
