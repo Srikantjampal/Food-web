@@ -18,6 +18,10 @@ const Sidebar = () => {
                 <img src={assets.order_icon} alt="" />
                 <p>Order Items</p>
             </NavLink>
+            <NavLink to='/promo-codes' className="sidebar-option">
+                <img src={assets.order_icon} alt="" />
+                <p>Promo Code</p>
+            </NavLink>
         </div>
     </div>
   )
