@@ -18,6 +18,14 @@ const StoreContextProvider = (props) => {
   const [discountPercentage, setDiscountPercentage] = useState(0);
 
   const validatePromoCode = async (code) => {
+      if(!code) {
+          alert("Please enter a promo code.");
+          return;
+      }
+      if(getcartTotalAmount() === 0) {
+          alert("Your cart is empty. Please add items to the cart before applying a promo code.");
+          return;
+      }
     try {
       const res = await axios.post(`${url}/api/promoCode/validate`, {
         code,
@@ -61,6 +69,8 @@ const StoreContextProvider = (props) => {
         const updatedCart = { ...cartItem };
         delete updatedCart[itemId];
         setCartItem(updatedCart);
+        setDiscount(0);
+        setDiscountPercentage(0);
         if (token) {
           await axios.post(
             url + "/api/cart/remove",
@@ -81,7 +91,7 @@ const StoreContextProvider = (props) => {
     }
   };
 
-  const removeAllFromCart = async (itemId) => {
+  const removeAllItemFromCartById = async (itemId) => {
     const confirmRemove = window.confirm(
       "Are you sure you want to remove this item from the cart?"
     );
@@ -89,15 +99,35 @@ const StoreContextProvider = (props) => {
       const updatedCart = { ...cartItem };
       delete updatedCart[itemId];
       setCartItem(updatedCart);
+      setDiscount(0);
+      setDiscountPercentage(0);
       if (token) {
         await axios.post(
-          url + "/api/cart/remove",
+          url + "/api/cart/remove-all-itemId",
           { itemId },
           { headers: { token } }
         );
       }
     }
   };
+
+  const clearAllItemFromCart = async (userId) => {
+    const confirmClear = window.confirm(
+      "Are you sure you want to clear the entire cart?"
+    );
+    if (confirmClear) {
+        setCartItem({});
+        setDiscount(0);
+        setDiscountPercentage(0);
+        if (token) {
+            await axios.post(
+                url + "/api/cart/clear-all",
+                { userId },
+                { headers: { token } }
+            );
+        }
+    }
+  }
 
   const getcartTotalAmount = () => {
     let totalAmt = 0;
@@ -119,7 +149,7 @@ const StoreContextProvider = (props) => {
       totalAmt = totalAmount - discount;
     }
     return totalAmt >= 0 ? totalAmt : 0;
-  }
+  };
   const fetchFoodList = async () => {
     const response = await axios.get(url + "/api/food/list");
     setFood_list(response.data.data);
@@ -152,13 +182,14 @@ const StoreContextProvider = (props) => {
     setCartItem,
     addToCart,
     removeToCart,
-    removeAllFromCart,
+    removeAllItemFromCartById,
     getcartTotalAmount,
     url,
     token,
     setToken,
     validatePromoCode,
-    getCalculatedTotalAmount
+    getCalculatedTotalAmount,
+    clearAllItemFromCart
   };
   return (
     <StoreContext.Provider value={contextValue}>

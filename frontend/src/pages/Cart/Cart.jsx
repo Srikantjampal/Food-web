@@ -4,8 +4,9 @@ import { assets } from "../../assets/assets";
 import { StoreContext } from "../../content/StoreContext";
 import { useNavigate } from "react-router-dom";
 import { Trash } from "lucide-react";
+import CartTracking from "../../components/CartTracking";
 
-const Cart = () => {
+const Cart = ({ visible, setShowHamburger }) => {
   const {
     cartItem,
     food_list,
@@ -13,17 +14,41 @@ const Cart = () => {
     getcartTotalAmount,
     addToCart,
     url,
-    removeAllFromCart,
+    removeAllItemFromCartById,
     validatePromoCode,
     discount,
     discountPercentage,
     getCalculatedTotalAmount,
+    clearAllItemFromCart,
   } = useContext(StoreContext);
 
   const [promoCode, setPromoCode] = useState("");
   const navigate = useNavigate();
+
   return (
     <div className="cart">
+      {!visible && (
+        <CartTracking onClose={() => setShowHamburger(!visible)} />
+      )}
+      <div className="clearout">
+        <button
+          className="clear-cart-button"
+          onClick={() => {
+            if (getcartTotalAmount() !== 0) {
+              const confirmClear = window.confirm(
+                "Are you sure you want to clear all items from the cart?"
+              );
+              if (confirmClear) {
+                clearAllItemFromCart();
+              }
+            } else {
+              alert("Your Cart is already empty");
+            }
+          }}
+        >
+          <Trash />
+        </button>
+      </div>
       <div className="cart-items">
         <div className="cart-items-title">
           <p>Items</p>
@@ -60,7 +85,7 @@ const Cart = () => {
                   </div>
                   <p>₹{item.price * cartItem[item._id]}</p>
                   <p
-                    onClick={() => removeAllFromCart(item._id)}
+                    onClick={() => removeAllItemFromCartById(item._id)}
                     className="cross"
                   >
                     <Trash />
@@ -81,15 +106,17 @@ const Cart = () => {
               <p>₹{getcartTotalAmount()}</p>
             </div>
             <hr />
-            {discount && (
-              <div className="cart-total-details">
-                <p>Discount</p>
-                <p>
-                  -₹{discount} ({discountPercentage})
-                </p>
-              </div>
+            {discount > 0 && (
+              <>
+                <div className="cart-total-details">
+                  <p>Discount</p>
+                  <p>
+                    -₹{discount} ({discountPercentage})
+                  </p>
+                </div>
+                <hr />
+              </>
             )}
-            <hr />
             <div className="cart-total-details">
               <p>Delivery Fee</p>
               <p>₹{getcartTotalAmount() !== 0 ? 2 : 0}</p>
