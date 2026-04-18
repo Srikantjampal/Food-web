@@ -6,6 +6,7 @@ import userRouter from "./routes/userRoute.js";
 import 'dotenv/config'
 import cartRouter from "./routes/cartRoute.js";
 import orderRouter from "./routes/orderRoute.js";
+import promoCodeRouter from "./routes/promoCode.js";
 //app config
 
 const app = express();
@@ -14,6 +15,8 @@ const PORT= process.env.PORT || 7777;
 //middlewares
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 app.use(cors());
 
 //  dbconnection 
@@ -26,6 +29,7 @@ app.use('/images',express.static('uploads'))
 app.use('/api/user',userRouter);
 app.use('/api/cart',cartRouter);
 app.use('/api/order',orderRouter);
+app.use('/api/promoCode',promoCodeRouter);
 
 app.get("/",(req,res)=>{
     res.send('backend working');
